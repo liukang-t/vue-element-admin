@@ -76,6 +76,126 @@ export const constantRoutes = [
         meta: { title: '首页', icon: 'dashboard', affix: true }
       }
     ]
+  },
+  {
+    path: '/merchant',
+    component: Layout,
+    redirect: '/merchant/index',
+    name: 'Merchant',
+    meta: {
+      title: '商户管理',
+      icon: 'peoples'
+    },
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/merchant/index'),
+        name: 'MerchantIndex',
+        meta: { title: '商户概览' }
+      },
+      {
+        path: 'list',
+        component: () => import('@/views/merchant/list'),
+        name: 'MerchantList',
+        meta: { title: '商户列表' }
+      },
+      {
+        path: 'app',
+        component: () => import('@/views/merchant/app'),
+        name: 'AppList',
+        meta: { title: '应用列表' }
+      }
+    ]
+  },
+  {
+    path: '/admin',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/admin/index'),
+        name: 'AdminIndex',
+        meta: { title: '管理员管理', icon: 'user' }
+      }
+    ]
+  },
+  {
+    path: '/provider',
+    component: Layout,
+    redirect: '/provider/list',
+    name: 'Provider',
+    meta: {
+      title: '服务商管理',
+      icon: 'peoples'
+    },
+    children: [
+      {
+        path: 'list',
+        component: () => import('@/views/provider/list'),
+        name: 'ProviderList',
+        meta: { title: '服务商列表' }
+      }
+    ]
+  },
+  {
+    path: '/payment',
+    component: Layout,
+    redirect: '/payment/order',
+    name: 'Payment',
+    meta: {
+      title: '支付管理',
+      icon: 'money'
+    },
+    children: [
+      {
+        path: 'order',
+        component: () => import('@/views/payment/order'),
+        name: 'PaymentOrder',
+        meta: { title: '支付订单' }
+      },
+      {
+        path: 'refund',
+        component: () => import('@/views/payment/refund'),
+        name: 'PaymentRefund',
+        meta: { title: '退款订单' }
+      },
+      {
+        path: 'transfer',
+        component: () => import('@/views/payment/transfer'),
+        name: 'PaymentTransfer',
+        meta: { title: '转账订单' }
+      },
+      {
+        path: 'notification',
+        component: () => import('@/views/payment/notification'),
+        name: 'PaymentNotification',
+        meta: { title: '商户通知' }
+      }
+    ]
+  },
+  {
+    path: '/payment-config',
+    component: Layout,
+    redirect: '/payment-config/interface',
+    name: 'PaymentConfig',
+    meta: {
+      title: '支付配置',
+      icon: 'setting'
+    },
+    children: [
+      {
+        path: 'interface',
+        component: () => import('@/views/payment-config/interface'),
+        name: 'PaymentInterface',
+        meta: { title: '支付接口' }
+      },
+      {
+        path: 'method',
+        component: () => import('@/views/payment-config/method'),
+        name: 'PaymentMethod',
+        meta: { title: '支付方式' }
+      }
+    ]
   }
 ]
 
