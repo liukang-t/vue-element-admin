@@ -99,6 +99,167 @@
         @current-change="handleCurrentChange"
       />
     </el-card>
+
+    <!-- 退款订单详情抽屉 -->
+    <el-drawer
+      title="退款订单详情"
+      :visible.sync="detailDrawerVisible"
+      direction="rtl"
+      size="60%"
+      :before-close="handleDetailClose"
+      :wrapper-closable="true"
+    >
+      <div class="detail-drawer-content">
+        <div class="detail-section">
+          <!-- 基本信息 -->
+          <div class="detail-row">
+            <div class="detail-item">
+              <span class="detail-label">所属系统</span>
+              <span class="detail-value">{{ refundDetail.systemType }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">退款订单号</span>
+              <span class="detail-value highlight-purple">{{ refundDetail.refundOrderNo }}</span>
+            </div>
+          </div>
+
+          <div class="detail-row">
+            <div class="detail-item">
+              <span class="detail-label">支付订单号</span>
+              <span class="detail-value">{{ refundDetail.payOrderNo }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">支付金额</span>
+              <span class="detail-value highlight-green">¥{{ refundDetail.payAmount }}</span>
+            </div>
+          </div>
+
+          <div class="detail-row">
+            <div class="detail-item">
+              <span class="detail-label">退款金额</span>
+              <span class="detail-value highlight-red">¥{{ refundDetail.refundAmount }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">退款状态</span>
+              <el-tag :type="getRefundStatusType(refundDetail.refundStatus)" size="small">
+                {{ refundDetail.refundStatus }}
+              </el-tag>
+            </div>
+          </div>
+
+          <div class="detail-row">
+            <div class="detail-item">
+              <span class="detail-label">商户号</span>
+              <span class="detail-value">{{ refundDetail.merchantId }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">商户名称</span>
+              <span class="detail-value">{{ refundDetail.merchantName }}</span>
+            </div>
+          </div>
+
+          <div class="detail-row">
+            <div class="detail-item">
+              <span class="detail-label">服务商号</span>
+              <span class="detail-value">{{ refundDetail.providerId || '-' }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">应用APPID</span>
+              <span class="detail-value">{{ refundDetail.appId }}</span>
+            </div>
+          </div>
+
+          <div class="detail-row">
+            <div class="detail-item">
+              <span class="detail-label">创建时间</span>
+              <span class="detail-value">{{ refundDetail.createTime }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">退款成功时间</span>
+              <span class="detail-value">{{ refundDetail.refundSuccessTime || '-' }}</span>
+            </div>
+          </div>
+
+          <div class="detail-row">
+            <div class="detail-item">
+              <span class="detail-label">更新时间</span>
+              <span class="detail-value">{{ refundDetail.updateTime }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">接口代码</span>
+              <span class="detail-value">{{ refundDetail.interfaceCode }}</span>
+            </div>
+          </div>
+
+          <div class="detail-row">
+            <div class="detail-item">
+              <span class="detail-label">货币代码</span>
+              <span class="detail-value">{{ refundDetail.currencyCode }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">方式代码</span>
+              <span class="detail-value">{{ refundDetail.wayCode }}</span>
+            </div>
+          </div>
+
+          <div class="detail-row">
+            <div class="detail-item">
+              <span class="detail-label">客户端IP</span>
+              <span class="detail-value">{{ refundDetail.clientIp }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">渠道订单号</span>
+              <span class="detail-value">{{ refundDetail.channelOrderNo || '-' }}</span>
+            </div>
+          </div>
+
+          <div class="detail-row">
+            <div class="detail-item full-width">
+              <span class="detail-label">异步通知地址</span>
+              <span class="detail-value">{{ refundDetail.notifyUrl || '-' }}</span>
+            </div>
+          </div>
+
+          <div class="detail-row">
+            <div class="detail-item">
+              <span class="detail-label">渠道错误码</span>
+              <span class="detail-value">{{ refundDetail.channelErrorCode || '-' }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">渠道错误描述</span>
+              <span class="detail-value">{{ refundDetail.channelErrorDesc || '-' }}</span>
+            </div>
+          </div>
+
+          <!-- 扩展参数 -->
+          <div class="detail-row">
+            <div class="detail-item full-width">
+              <span class="detail-label">渠道额外参数</span>
+              <el-input
+                v-model="refundDetail.channelExtraParams"
+                type="textarea"
+                :rows="4"
+                placeholder="暂无渠道额外参数"
+                readonly
+              />
+            </div>
+          </div>
+
+          <div class="detail-row">
+            <div class="detail-item full-width">
+              <span class="detail-label">扩展参数</span>
+              <el-input
+                v-model="refundDetail.extendParams"
+                type="textarea"
+                :rows="4"
+                placeholder="暂无扩展参数"
+                readonly
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </el-drawer>
   </div>
 </template>
 
@@ -151,6 +312,33 @@ export default {
         currentPage: 1,
         pageSize: 10,
         total: 3
+      },
+      // 退款订单详情抽屉相关数据
+      detailDrawerVisible: false,
+      refundDetail: {
+        systemType: '普通商户',
+        refundOrderNo: 'R1725430221110276097',
+        payOrderNo: 'P1725429856956608513',
+        payAmount: '0.01',
+        refundAmount: '0.01',
+        refundStatus: '退款成功',
+        merchantId: 'M1679219294',
+        merchantName: '火锅鸡',
+        providerId: '',
+        appId: '6416da5ee4b00bed884be286',
+        createTime: '2023-11-17 16:26:36',
+        refundSuccessTime: '2023-11-17 16:26:38',
+        updateTime: '2023-11-17 16:26:37',
+        interfaceCode: 'plspay',
+        currencyCode: 'CNY',
+        wayCode: 'ALI_BAR',
+        clientIp: '81.70.214.87',
+        channelOrderNo: 'R1725430221332049921',
+        notifyUrl: '',
+        channelErrorCode: '',
+        channelErrorDesc: '',
+        channelExtraParams: '',
+        extendParams: ''
       }
     }
   },
@@ -191,7 +379,45 @@ export default {
       }
     },
     handleDetail(row) {
-      this.$message.info(`查看退款详情：${row.refundOrderNo}`)
+      // 打开退款订单详情抽屉并填充数据
+      this.refundDetail = {
+        systemType: '普通商户',
+        refundOrderNo: row.refundOrderNo,
+        payOrderNo: row.payOrderNo,
+        payAmount: row.payAmount,
+        refundAmount: row.refundAmount,
+        refundStatus: row.refundStatus === 'success' ? '退款成功' : row.refundStatus === 'failed' ? '退款失败' : '退款中',
+        merchantId: 'M1679219294',
+        merchantName: '测试商户',
+        providerId: '',
+        appId: '6416da5ee4b00bed884be286',
+        createTime: row.createTime,
+        refundSuccessTime: row.refundStatus === 'success' ? row.createTime : '',
+        updateTime: '2023-11-17 16:26:37',
+        interfaceCode: 'plspay',
+        currencyCode: 'CNY',
+        wayCode: 'ALI_BAR',
+        clientIp: '81.70.214.87',
+        channelOrderNo: 'R1725430221332049921',
+        notifyUrl: '',
+        channelErrorCode: '',
+        channelErrorDesc: '',
+        channelExtraParams: '',
+        extendParams: ''
+      }
+      this.detailDrawerVisible = true
+    },
+    // 退款订单详情抽屉相关方法
+    handleDetailClose() {
+      this.detailDrawerVisible = false
+    },
+    getRefundStatusType(status) {
+      const typeMap = {
+        '退款成功': 'success',
+        '退款失败': 'danger',
+        '退款中': 'warning'
+      }
+      return typeMap[status] || 'info'
     },
     handleSizeChange(val) {
       this.pagination.pageSize = val
@@ -225,5 +451,91 @@ export default {
 
 .demo-form-inline {
   margin-bottom: 20px;
+}
+
+// 退款订单详情抽屉样式
+.detail-drawer-content {
+  padding: 20px;
+  height: calc(100vh - 120px);
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.detail-section {
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.detail-row {
+  display: flex;
+  margin-bottom: 16px;
+  align-items: flex-start;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.detail-item {
+  flex: 1;
+  display: flex;
+  align-items: flex-start;
+  padding-right: 20px;
+
+  &.full-width {
+    flex: 2;
+  }
+
+  &:last-child {
+    padding-right: 0;
+  }
+}
+
+.detail-label {
+  min-width: 120px;
+  font-size: 14px;
+  color: #606266;
+  font-weight: 500;
+  margin-right: 12px;
+  line-height: 1.5;
+}
+
+.detail-value {
+  flex: 1;
+  font-size: 14px;
+  color: #303133;
+  line-height: 1.5;
+  word-break: break-all;
+
+  &.highlight-purple {
+    background-color: #f0f2ff;
+    color: #6366f1;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-family: 'Courier New', monospace;
+    font-weight: 500;
+  }
+
+  &.highlight-green {
+    background-color: #f0f9ff;
+    color: #059669;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: 600;
+  }
+
+  &.highlight-red {
+    background-color: #fef2f2;
+    color: #dc2626;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: 600;
+  }
+}
+
+.el-tag {
+  margin: 0;
 }
 </style>

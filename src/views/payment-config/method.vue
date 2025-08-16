@@ -21,7 +21,7 @@
 
       <!-- 新建按钮 -->
       <div class="action-bar">
-        <el-button type="primary" icon="el-icon-plus" @click="handleAdd">+ 新建</el-button>
+        <el-button type="primary" icon="el-icon-plus" @click="handleAdd">新建</el-button>
       </div>
 
       <!-- 表格 -->

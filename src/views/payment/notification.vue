@@ -101,6 +101,113 @@
         @current-change="handleCurrentChange"
       />
     </el-card>
+
+    <!-- 商户通知详情抽屉 -->
+    <el-drawer
+      title="商户通知详情"
+      :visible.sync="detailDrawerVisible"
+      direction="rtl"
+      size="60%"
+      :before-close="handleDetailClose"
+      :wrapper-closable="true"
+    >
+      <div class="detail-drawer-content">
+        <div class="detail-section">
+          <!-- 基本信息 -->
+          <div class="detail-row">
+            <div class="detail-item">
+              <span class="detail-label">订单ID</span>
+              <span class="detail-value highlight-purple">{{ notificationDetail.orderId }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">商户订单号</span>
+              <span class="detail-value">{{ notificationDetail.merchantOrderNo }}</span>
+            </div>
+          </div>
+
+          <div class="detail-row">
+            <div class="detail-item">
+              <span class="detail-label">服务商号</span>
+              <span class="detail-value">{{ notificationDetail.providerId || '-' }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">商户号</span>
+              <span class="detail-value">{{ notificationDetail.merchantId }}</span>
+            </div>
+          </div>
+
+          <div class="detail-row">
+            <div class="detail-item">
+              <span class="detail-label">应用APPID</span>
+              <span class="detail-value">{{ notificationDetail.appId }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">订单类型</span>
+              <el-tag :type="getOrderTypeTag(notificationDetail.orderType)" size="small">
+                {{ notificationDetail.orderType }}
+              </el-tag>
+            </div>
+          </div>
+
+          <div class="detail-row">
+            <div class="detail-item">
+              <span class="detail-label">通知状态</span>
+              <el-tag :type="getNotifyStatusTag(notificationDetail.notifyStatus)" size="small">
+                {{ notificationDetail.notifyStatus }}
+              </el-tag>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">通知次数</span>
+              <span class="detail-value">{{ notificationDetail.notifyCount }}</span>
+            </div>
+          </div>
+
+          <div class="detail-row">
+            <div class="detail-item">
+              <span class="detail-label">最后通知时间</span>
+              <span class="detail-value">{{ notificationDetail.lastNotifyTime }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">创建时间</span>
+              <span class="detail-value">{{ notificationDetail.createTime }}</span>
+            </div>
+          </div>
+
+          <div class="detail-row">
+            <div class="detail-item">
+              <span class="detail-label">更新时间</span>
+              <span class="detail-value">{{ notificationDetail.updateTime }}</span>
+            </div>
+          </div>
+
+          <div class="detail-row">
+            <div class="detail-item full-width">
+              <span class="detail-label">通知地址</span>
+              <el-input
+                v-model="notificationDetail.notifyUrl"
+                type="textarea"
+                :rows="4"
+                placeholder="暂无通知地址"
+                readonly
+              />
+            </div>
+          </div>
+
+          <div class="detail-row">
+            <div class="detail-item full-width">
+              <span class="detail-label">响应结果</span>
+              <el-input
+                v-model="notificationDetail.responseResult"
+                type="textarea"
+                :rows="4"
+                placeholder="暂无响应结果"
+                readonly
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </el-drawer>
   </div>
 </template>
 
@@ -159,6 +266,23 @@ export default {
         currentPage: 1,
         pageSize: 10,
         total: 4
+      },
+      // 商户通知详情抽屉相关数据
+      detailDrawerVisible: false,
+      notificationDetail: {
+        orderId: 'P1725429856956608513',
+        merchantOrderNo: 'M17002094594758373',
+        providerId: '',
+        merchantId: 'M1679219294',
+        appId: '6416da5ee4b00bed884be286',
+        orderType: '支付',
+        notifyStatus: '通知成功',
+        notifyCount: '1',
+        lastNotifyTime: '2023-11-17 16:25:10',
+        createTime: '2023-11-17 16:25:10',
+        updateTime: '2023-11-17 16:25:10',
+        notifyUrl: 'http://mch.d.jeepay.vip/api/anon/paytestNotify/payOrder?ifCode=plspay&amount=1&payOrderId=P1725429856956608513&mchOrderNo=M17002094594758373&subject=%E6%8E%A5%E5%8F%A3%E8%B0%83%E8%AF%95%5BM1679219294%E5%95%86%E6%88%B7%E8%81%94%E8%B0%83%5D&wayCode=ALI_BAR&sign=B606DA55456240B372630BBDCF77DC2F&reqTime=17002',
+        responseResult: 'SUCCESS'
       }
     }
   },
@@ -216,7 +340,27 @@ export default {
       }
     },
     handleDetail(row) {
-      this.$message.info(`查看通知详情：${row.orderId}`)
+      // 打开商户通知详情抽屉并填充数据
+      this.notificationDetail = {
+        orderId: row.orderId,
+        merchantOrderNo: row.merchantOrderNo,
+        providerId: '',
+        merchantId: 'M1679219294',
+        appId: '6416da5ee4b00bed884be286',
+        orderType: row.orderType === 'pay' ? '支付' : row.orderType === 'refund' ? '退款' : '转账',
+        notifyStatus: row.notifyStatus === 'success' ? '通知成功' : row.notifyStatus === 'failed' ? '通知失败' : '通知中',
+        notifyCount: '1',
+        lastNotifyTime: row.createTime,
+        createTime: row.createTime,
+        updateTime: row.createTime,
+        notifyUrl: 'http://mch.d.jeepay.vip/api/anon/paytestNotify/payOrder?ifCode=plspay&amount=1&payOrderId=P1725429856956608513&mchOrderNo=M17002094594758373&subject=%E6%8E%A5%E5%8F%A3%E8%B0%83%E8%AF%95%5BM1679219294%E5%95%86%E6%88%B7%E8%81%94%E8%B0%83%5D&wayCode=ALI_BAR&sign=B606DA55456240B372630BBDCF77DC2F&reqTime=17002',
+        responseResult: row.notifyStatus === 'success' ? 'SUCCESS' : 'FAILED'
+      }
+      this.detailDrawerVisible = true
+    },
+    // 商户通知详情抽屉相关方法
+    handleDetailClose() {
+      this.detailDrawerVisible = false
     },
     handleSizeChange(val) {
       this.pagination.pageSize = val
@@ -250,5 +394,91 @@ export default {
 
 .demo-form-inline {
   margin-bottom: 20px;
+}
+
+// 商户通知详情抽屉样式
+.detail-drawer-content {
+  padding: 20px;
+  height: calc(100vh - 120px);
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.detail-section {
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.detail-row {
+  display: flex;
+  margin-bottom: 16px;
+  align-items: flex-start;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.detail-item {
+  flex: 1;
+  display: flex;
+  align-items: flex-start;
+  padding-right: 20px;
+
+  &.full-width {
+    flex: 2;
+  }
+
+  &:last-child {
+    padding-right: 0;
+  }
+}
+
+.detail-label {
+  min-width: 120px;
+  font-size: 14px;
+  color: #606266;
+  font-weight: 500;
+  margin-right: 12px;
+  line-height: 1.5;
+}
+
+.detail-value {
+  flex: 1;
+  font-size: 14px;
+  color: #303133;
+  line-height: 1.5;
+  word-break: break-all;
+
+  &.highlight-purple {
+    background-color: #f0f2ff;
+    color: #6366f1;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-family: 'Courier New', monospace;
+    font-weight: 500;
+  }
+
+  &.highlight-green {
+    background-color: #f0f9ff;
+    color: #059669;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: 600;
+  }
+
+  &.highlight-red {
+    background-color: #fef2f2;
+    color: #dc2626;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: 600;
+  }
+}
+
+.el-tag {
+  margin: 0;
 }
 </style>

@@ -3,7 +3,7 @@
     <el-card>
       <div slot="header" class="clearfix">
         <span>操作员管理</span>
-        <el-button style="float: right; padding: 3px 0" type="primary" @click="handleAdd">+ 新建</el-button>
+        <el-button style="float: right; padding: 3px 0" type="primary" @click="handleAdd">新建</el-button>
       </div>
 
       <!-- 搜索区域 -->创建日期

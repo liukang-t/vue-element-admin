@@ -87,6 +87,178 @@
         @current-change="handleCurrentChange"
       />
     </el-card>
+
+    <!-- 转账订单详情抽屉 -->
+    <el-drawer
+      title="转账订单详情"
+      :visible.sync="detailDrawerVisible"
+      direction="rtl"
+      size="60%"
+      :before-close="handleDetailClose"
+      :wrapper-closable="true"
+    >
+      <div class="detail-drawer-content">
+        <div class="detail-section">
+          <!-- 基本信息 -->
+          <div class="detail-row">
+            <div class="detail-item">
+              <span class="detail-label">商户类型</span>
+              <span class="detail-value">{{ transferDetail.merchantType }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">转账订单号</span>
+              <span class="detail-value highlight-purple">{{ transferDetail.transferOrderNo }}</span>
+            </div>
+          </div>
+
+          <div class="detail-row">
+            <div class="detail-item">
+              <span class="detail-label">商户名称</span>
+              <span class="detail-value">{{ transferDetail.merchantName }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">金额</span>
+              <span class="detail-value highlight-green">¥{{ transferDetail.amount }}</span>
+            </div>
+          </div>
+
+          <div class="detail-row">
+            <div class="detail-item">
+              <span class="detail-label">收款账号</span>
+              <span class="detail-value highlight-green">{{ transferDetail.receiverAccount }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">收款人姓名</span>
+              <span class="detail-value">{{ transferDetail.receiverName }}</span>
+            </div>
+          </div>
+
+          <div class="detail-row">
+            <div class="detail-item">
+              <span class="detail-label">转账备注</span>
+              <span class="detail-value">{{ transferDetail.transferRemark }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">订单状态</span>
+              <el-tag :type="getTransferStatusType(transferDetail.orderStatus)" size="small">
+                {{ transferDetail.orderStatus }}
+              </el-tag>
+            </div>
+          </div>
+
+          <div class="detail-row">
+            <div class="detail-item">
+              <span class="detail-label">商户号</span>
+              <span class="detail-value">{{ transferDetail.merchantId }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">应用APPID</span>
+              <span class="detail-value">{{ transferDetail.appId }}</span>
+            </div>
+          </div>
+
+          <div class="detail-row">
+            <div class="detail-item">
+              <span class="detail-label">服务商号</span>
+              <span class="detail-value">{{ transferDetail.providerId || '-' }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">商户转账单号</span>
+              <span class="detail-value">{{ transferDetail.merchantTransferOrderNo }}</span>
+            </div>
+          </div>
+
+          <div class="detail-row">
+            <div class="detail-item">
+              <span class="detail-label">创建时间</span>
+              <span class="detail-value">{{ transferDetail.createTime }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">转账成功时间</span>
+              <span class="detail-value">{{ transferDetail.transferSuccessTime || '-' }}</span>
+            </div>
+          </div>
+
+          <div class="detail-row">
+            <div class="detail-item">
+              <span class="detail-label">更新时间</span>
+              <span class="detail-value">{{ transferDetail.updateTime }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">接口代码</span>
+              <span class="detail-value">{{ transferDetail.interfaceCode }}</span>
+            </div>
+          </div>
+
+          <div class="detail-row">
+            <div class="detail-item">
+              <span class="detail-label">货币代码</span>
+              <span class="detail-value">{{ transferDetail.currencyCode }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">入账类型</span>
+              <span class="detail-value">{{ transferDetail.entryType }}</span>
+            </div>
+          </div>
+
+          <div class="detail-row">
+            <div class="detail-item">
+              <span class="detail-label">客户端IP</span>
+              <span class="detail-value">{{ transferDetail.clientIp }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">渠道订单号</span>
+              <span class="detail-value">{{ transferDetail.channelOrderNo || '-' }}</span>
+            </div>
+          </div>
+
+          <div class="detail-row">
+            <div class="detail-item full-width">
+              <span class="detail-label">异步通知地址</span>
+              <span class="detail-value">{{ transferDetail.notifyUrl || '-' }}</span>
+            </div>
+          </div>
+
+          <div class="detail-row">
+            <div class="detail-item">
+              <span class="detail-label">渠道错误码</span>
+              <span class="detail-value">{{ transferDetail.channelErrorCode || '-' }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">渠道错误描述</span>
+              <span class="detail-value">{{ transferDetail.channelErrorDesc || '-' }}</span>
+            </div>
+          </div>
+
+          <!-- 扩展参数 -->
+          <div class="detail-row">
+            <div class="detail-item full-width">
+              <span class="detail-label">渠道额外参数</span>
+              <el-input
+                v-model="transferDetail.channelExtraParams"
+                type="textarea"
+                :rows="4"
+                placeholder="暂无渠道额外参数"
+                readonly
+              />
+            </div>
+          </div>
+
+          <div class="detail-row">
+            <div class="detail-item full-width">
+              <span class="detail-label">扩展参数</span>
+              <el-input
+                v-model="transferDetail.extendParams"
+                type="textarea"
+                :rows="4"
+                placeholder="暂无扩展参数"
+                readonly
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </el-drawer>
   </div>
 </template>
 
@@ -143,6 +315,35 @@ export default {
         currentPage: 1,
         pageSize: 10,
         total: 3
+      },
+      // 转账订单详情抽屉相关数据
+      detailDrawerVisible: false,
+      transferDetail: {
+        merchantType: '普通商户',
+        transferOrderNo: 'T1726894067750563842',
+        merchantName: '火锅鸡',
+        amount: '0.01',
+        receiverAccount: '12242411111',
+        receiverName: 'abc',
+        transferRemark: '打款',
+        orderStatus: '订单生成',
+        merchantId: 'M1679219294',
+        appId: '655c7664e4b03fd72d40bbe3',
+        providerId: '',
+        merchantTransferOrderNo: 'M17005585828878108',
+        createTime: '2023-11-21 17:23:24',
+        transferSuccessTime: '',
+        updateTime: '2023-11-21 17:23:24',
+        interfaceCode: 'alipay',
+        currencyCode: 'CNY',
+        entryType: 'ALIPAY_CASH',
+        clientIp: '81.70.214.87',
+        channelOrderNo: '',
+        notifyUrl: '',
+        channelErrorCode: '',
+        channelErrorDesc: '',
+        channelExtraParams: '',
+        extendParams: ''
       }
     }
   },
@@ -181,7 +382,48 @@ export default {
       }
     },
     handleDetail(row) {
-      this.$message.info(`查看转账详情：${row.orderNo}`)
+      // 打开转账订单详情抽屉并填充数据
+      this.transferDetail = {
+        merchantType: '普通商户',
+        transferOrderNo: row.orderNo,
+        merchantName: row.merchantName,
+        amount: row.transferAmount,
+        receiverAccount: row.receiverAccount,
+        receiverName: row.receiverName,
+        transferRemark: row.transferRemark,
+        orderStatus: row.transferStatus === 'success' ? '转账成功' : row.transferStatus === 'failed' ? '转账失败' : '转账中',
+        merchantId: 'M1679219294',
+        appId: '655c7664e4b03fd72d40bbe3',
+        providerId: '',
+        merchantTransferOrderNo: `M${row.orderNo.slice(-8)}`,
+        createTime: row.createTime,
+        transferSuccessTime: row.transferStatus === 'success' ? row.createTime : '',
+        updateTime: '2023-11-21 17:23:24',
+        interfaceCode: 'alipay',
+        currencyCode: 'CNY',
+        entryType: 'ALIPAY_CASH',
+        clientIp: '81.70.214.87',
+        channelOrderNo: '',
+        notifyUrl: '',
+        channelErrorCode: '',
+        channelErrorDesc: '',
+        channelExtraParams: '',
+        extendParams: ''
+      }
+      this.detailDrawerVisible = true
+    },
+    // 转账订单详情抽屉相关方法
+    handleDetailClose() {
+      this.detailDrawerVisible = false
+    },
+    getTransferStatusType(status) {
+      const typeMap = {
+        '转账成功': 'success',
+        '转账失败': 'danger',
+        '转账中': 'warning',
+        '订单生成': 'info'
+      }
+      return typeMap[status] || 'info'
     },
     handleSizeChange(val) {
       this.pagination.pageSize = val
@@ -215,5 +457,91 @@ export default {
 
 .demo-form-inline {
   margin-bottom: 20px;
+}
+
+// 转账订单详情抽屉样式
+.detail-drawer-content {
+  padding: 20px;
+  height: calc(100vh - 120px);
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.detail-section {
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.detail-row {
+  display: flex;
+  margin-bottom: 16px;
+  align-items: flex-start;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.detail-item {
+  flex: 1;
+  display: flex;
+  align-items: flex-start;
+  padding-right: 20px;
+
+  &.full-width {
+    flex: 2;
+  }
+
+  &:last-child {
+    padding-right: 0;
+  }
+}
+
+.detail-label {
+  min-width: 120px;
+  font-size: 14px;
+  color: #606266;
+  font-weight: 500;
+  margin-right: 12px;
+  line-height: 1.5;
+}
+
+.detail-value {
+  flex: 1;
+  font-size: 14px;
+  color: #303133;
+  line-height: 1.5;
+  word-break: break-all;
+
+  &.highlight-purple {
+    background-color: #f0f2ff;
+    color: #6366f1;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-family: 'Courier New', monospace;
+    font-weight: 500;
+  }
+
+  &.highlight-green {
+    background-color: #f0f9ff;
+    color: #059669;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: 600;
+  }
+
+  &.highlight-red {
+    background-color: #fef2f2;
+    color: #dc2626;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: 600;
+  }
+}
+
+.el-tag {
+  margin: 0;
 }
 </style>
